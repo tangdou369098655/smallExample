@@ -7,6 +7,75 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <script>
+    //    将一个对象的部分属性，赋值给另一个数组的每个对象
+    // 初始化数据举例
+    let oldObj={
+        aa:1,
+        ab:'haha',
+        pa1:'pa1',
+        pa2:'pa2',
+        pa3:'pa3',
+        pa4:'pa4',
+        pa5:'pa5',
+        pa6:'pa6',
+    }
+     let arrLength=6;
+
+    // 方法一
+     let arr=[];
+     Array.apply(null,{length:arrLength}).forEach((_,i) => {
+         let item = oldObj['pa'+(i+1)];
+         let object = {
+             id: i+1,
+             value: item?item:''
+         }
+         arr.push(object)
+     });
+     console.log('方法1');
+     console.log(arr);
+
+    //  方法二
+    let arr1=new Array(arrLength);
+    arr1=arr1.map((_,i)=>{
+        return {
+
+        }
+    })
+     console.log('方法2');
+     console.log(arr1);
+
+    //  方法三
+    // let arr2=new Array(arrLength).fill({});
+    let arr2=new Array(arrLength);
+    arr2.forEach((_,i)=>{
+        let item = oldObj['pa'+(i+1)];
+        _=new Object();
+        _.id = (i+1);
+        _.value = item ? item : '';
+        console.log(_)
+    })
+     console.log('方法3');
+     console.log(arr2);
+
+    //  方法四
+    let arr3=new Array(arrLength).fill({});
+    arr3.forEach((_,i)=>{
+        let item = oldObj['pa'+(i+1)];
+        _.id = (i+1);
+        _.value = item ? item : '';
+        console.log(_)
+    })
+     console.log('方法4');
+     console.log(arr3);
+
+    //  方法五 想要用reduce,但是我不会呢   
+    let arr4=[];
+    arr4.reduce((_,i)=>{
+        
+    })
+     console.log('方法5');
+     console.log(arr4);
+    </script>
 </body>
 </html>
