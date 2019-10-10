@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>批量添加</title>
+		<style type="text/css">
+			body{
+				min-width: 1400px;
+				font-size: 20px;
+			}
+			.body_head{
+				padding-bottom: 30px;
+			}
+			.body_body div{
+				border: 1px solid #000;
+				max-width: 90%;
+				padding: 5px;
+				margin: 10px;
+			}
+			.body_right{
+				padding-top: 50px;
+				float: right;
+			}
+			.body_body label{
+				padding: 0 10px 0 10px;
+			}
+			.body_body input{
+				max-width: 6.74%;
+				font-size: 20px;
+			}
+			.form_select{
+				padding: 5px 0 5px 0;
+				margin-left: -7px;
+			}
+			.body_top_but input{
+				font-size: 1rem;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<div class="body_top_but">
+				<input type="button" name="" onclick="add_div1()" value="添加一个" />
+				<input type="button" name="" onclick="add_div10()" value="添加十个" />
+				<input type="button" name="" onclick="del_div()" value="删除一个" />
+				<input type="button" name="" onclick="del_div5()" value="删除五个" />
+				<input type="button" name="" value="返回上一级" />
+			</div>
+			
+			<div class="body_head"><label style="font-size: 1rem;">ps:不能有空行，空行请删除，确保没有空行再添加，有空行会失败</label></div>
+			
+			<div class="body_body" id="body_body">
+				<form id="body_form" class="body_form">
+					<div id="body_content" class="body_content">
+							<label>生产厂家:</label><input type="text" class="form_sccj" id="form_sccj" name="sccj"/>
+							<label>商品名称:</label><input type="text" class="form_spmc" id="form_spmc" name="spmc"/>
+							<label>规格型号:</label><input type="text" class="form_ggxh" id="form_ggxh" name="ggxh"/>
+							<label>单位:</label>
+							<select class="form_select" id="form_select" name="">
+								<option value="0">台</option>
+								<option value="1">条</option>
+								<option value="2">个</option>
+							 </select> 
+							<label>库存数量:</label><input type="text" class="form_kcsl" id="form_kcsl" name="kcsl" onblur="kucunshulang(this)"/>
+							<label>入库单价:</label><input type="text" class="form_rkdj" id="form_rkdj" name="rkdj" onblur="rukudanjia(this)"/>
+							<label>总价:</label><input type="text" class="form_zj" id="form_zj" readonly="value" name="zj"/>
+					</div>
+				</form>
+			</div>
+			<div class="body_right">
+				<input type="button" name="" id="" value="确认" onclick="method()" />
+				<input type="button" name="" id="" value="取消" />
+			</div>
+		</div>
+		<script src="js/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery.mousewheel.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			/*多个添加和单个删除*/
+			var detail_div = 1;
+			function add_div1() {
+				var e = document.getElementById("body_form");
+				var div = document.createElement("form");
+				div.className = "body_form";
+				div.id = "body_form" + detail_div;
+				div.innerHTML = e.innerHTML;
+				document.getElementById("body_body").appendChild(div);
+				detail_div++;
+			}
+			function add_div10(){
+				for(var i = 1 ; i <= 10 ; i++){
+					var e = document.getElementById("body_form");
+					var div = document.createElement("form");
+					div.className = "body_form";
+					div.id = "body_form" + detail_div;
+					div.innerHTML = e.innerHTML;
+					document.getElementById("body_body").appendChild(div);
+					detail_div++;
+				}
+			}
+			function del_div() {
+				var id = "body_form" + (detail_div - 1).toString();
+				var e = document.getElementById(id);
+				document.getElementById("body_body").removeChild(e);
+				detail_div--;
+			}
+			function del_div5() {
+				for(var a = 1 ; a <= 5 ; a++){
+					var id = "body_form" + (detail_div - 1).toString();
+					var e = document.getElementById(id);
+					document.getElementById("body_body").removeChild(e);
+					detail_div--;
+				}
+			}
+			/*多个添加    end*/
+			
+			/*循环验证   1.验证非空  2.验证是否是数字  3.存集合*/ 
+			/* 将浮点数四舍五入，取小数点后2位 */
+			function toDecimal(x) {   
+				var f = parseFloat(x);   
+				if (isNaN(f)) {   
+					return;
+				}
+				f = Math.round(x*100)/100;   
+				return f;
+			}
+			/* END */
+			var a1 = /^[0-9]+(.[0-9]{1,2})?$/;	//小数点后最后两位
+			var a2 = /^[0-9]*$/;				//数字验证
+			var div1 = "";
+			var div2 = document.getElementsByTagName('form');
+			var form_sccj = "";
+			var form_spmc = "";
+			var form_ggxh = "";
+			var form_select = "";
+			var form_kcsl = 0;
+			var form_rkdj = 0;
+			var form_zj = 0;
+			var effects = [];
+			function method(){
+				var effect = new Array();
+				for(var detail = 0 ; detail <= detail_div - 1 ; detail++){
+					div1 = document.getElementsByTagName("form")[detail];
+					div2[detail].index = div1;
+					form_sccj = div1.getElementsByTagName("input")[0].value;
+					form_spmc = div1.getElementsByTagName("input")[1].value;
+					form_ggxh = div1.getElementsByTagName("input")[2].value;
+					form_select = div1.getElementsByTagName("select")[0].value;
+					form_kcsl = div1.getElementsByTagName("input")[3].value;
+					form_rkdj = div1.getElementsByTagName("input")[4].value;
+					form_zj = div1.getElementsByTagName("input")[5].value;
+					/* console.log(div1);
+					console.log("sccj:"+form_sccj.value);
+					console.log("spmc:"+form_spmc.value);
+					console.log("ggxh:"+form_ggxh.value);
+					console.log("select:"+form_select.value);
+					console.log("rkdj:"+form_rkdj.value);
+					console.log("kcsl:"+form_kcsl.value); */		
+					
+					if(form_sccj != null && form_sccj.length > 0){
+						if(form_spmc != null && form_spmc.length > 0){
+							if(form_ggxh != null && form_ggxh.length > 0){
+								if(form_kcsl != null && form_kcsl.length > 0){
+									if(form_rkdj != null && form_rkdj.length > 0){
+										
+										var form = new Object();
+										/* console.log(form_sccj+";"+form_spmc+";"+form_ggxh+";"+form_select+";"+form_kcsl+";"+form_rkdj+";"+form_zj); */
+										effect = {form_sccj,form_spmc,form_ggxh,form_select,form_kcsl,form_rkdj,form_zj};
+										effects.push(effect);
+										/* location.reload(); */
+										
+									}else{alert("第"+(detail+1)+"行的入库单价中:   空");break;}
+								}else{alert("第"+(detail+1)+"行的库存数量中:   空");break;}
+							}else{alert("第"+(detail+1)+"行的规格型号中:   空");break;}
+						}else{alert("第"+(detail+1)+"行的商品名称中:   空");break;}
+					}else{alert("第"+(detail+1)+"行的生产厂家中:   空");break;}
+				}
+				console.log(effects/*最后传的值*/);
+			} 
+			function kucunshulang(){
+				/* div1.getElementsByTagName("input")[5].value = form_zj; */
+				for(var detail = 0 ; detail <= detail_div - 1 ; detail++){
+					form_kcsl = Number(div2[detail][4].value);
+					form_rkdj = Number(div2[detail][5].value);
+					if (a2.test(form_kcsl)) {
+						/* console.log("2-1:"+form_kcsl);
+						console.log("2-2:"+form_kcsl); */
+						form_zj = form_kcsl * form_rkdj;
+						/* console.log("和:"+form_zj); */
+						div2[detail][6].value = toDecimal(form_zj);
+					} else{
+						alert("第"+(detail+1)+"行的库存数量中:输入内容非纯数字或有小数");
+						break;
+					}
+				}
+			}
+			function rukudanjia(){
+				for(var detail = 0 ; detail <= detail_div - 1 ; detail++){
+					form_kcsl = Number(div2[detail][4].value);
+					form_rkdj = Number(div2[detail][5].value);
+					if (a1.test(form_rkdj)) {
+						/* console.log("2-1:"+form_kcsl);
+						console.log("2-2:"+form_kcsl); */
+						form_zj = form_kcsl * form_rkdj;
+						/* console.log("和:"+form_zj); */
+						div2[detail][6].value = toDecimal(form_zj);
+					}else{
+						alert("第"+(detail+1)+"行的库存数量中:最多存在两位小数或者输入的是非数字");
+						break;
+					}
+				}
+			}
+			/*验证   end*/
+		</script>
+	</body>
+</html>

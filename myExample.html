@@ -24,7 +24,7 @@
     // 这个是我们将要建立的数组的长度
      let arrLength=6;
 
-    // 方法一
+    // 方法一 forEach
      let arr=[];
      Array.apply(null,{length:arrLength}).forEach((_,i) => {
          let item = oldObj['pa'+(i+1)];
@@ -37,30 +37,20 @@
      console.log('方法1');
      console.log(arr);
 
-    //  方法二
-    let arr1=new Array(arrLength);
-    arr1=arr1.map((_,i)=>{
-        return {
-
-        }
-    })
+    //  方法二  map
+    let arr1 = Array.apply(null, { length: arrLength}).map((_, i) => ({
+        id: i + 1, value: oldObj['pa'+(i+1)] || ''
+    }))
      console.log('方法2');
      console.log(arr1);
 
-    //  方法三
-    // let arr2=new Array(arrLength).fill({});
-    let arr2=new Array(arrLength);
-    arr2.forEach((_,i)=>{
-        let item = oldObj['pa'+(i+1)];
-        _=new Object();
-        _.id = (i+1);
-        _.value = item ? item : '';
-        console.log(_)
-    })
-     console.log('方法3');
-     console.log(arr2);
+    //  方法三 reduce
+   let obj = Array.apply(null, { length: arrLength}).reduce((acc, _, i) => ({
+        ...acc, [i + 1]: oldObj[`pa${i+1}`] || ''}), {})
+     console.log('方法3  reduce');
+     console.log(obj);
 
-    //  方法四
+    //  方法四 有问题，无法实现
     let arr3=new Array(arrLength).fill({});
     arr3.forEach((_,i)=>{
         let item = oldObj['pa'+(i+1)];
@@ -71,13 +61,6 @@
      console.log('方法4');
      console.log(arr3);
 
-    //  方法五 想要用reduce,但是我不会呢   
-    let arr4=[];
-    arr4.reduce((_,i)=>{
-        
-    })
-     console.log('方法5');
-     console.log(arr4);
     </script>
 </body>
 </html>
